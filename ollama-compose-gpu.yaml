@@ -3,7 +3,7 @@ services:
     image: ollama/ollama:latest
     container_name: ollama
     restart: unless-stopped
-    command: ["ollama", "run", "llama3.2"]   ## ["ollama", "run", <model_name>] 
+    command: ollama run llama3.2   ## ["ollama", "run", <model_name>] 
     network_mode: host
     deploy:
       resources:

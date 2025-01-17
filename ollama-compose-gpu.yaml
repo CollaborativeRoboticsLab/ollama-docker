@@ -1,10 +1,11 @@
 services:
   ollama:
     image: ollama/ollama:latest
+    pull_policy: always
     container_name: ollama
     restart: unless-stopped
-    command: ollama run llama3.2   ## ["ollama", "run", <model_name>] 
-    network_mode: host
+    # command: ollama run llama3.2   ## ["ollama", "run", <model_name>] 
+    #network_mode: host
     deploy:
       resources:
         reservations:
@@ -16,6 +17,24 @@ services:
       - 11434:11434
     volumes:
       - type: bind
-        source: /home/docker/ollama
+        source: ../docker/ollama
         target: /root/.ollama
     runtime: nvidia
+
+  ollama-ui:
+    image: ghcr.io/open-webui/open-webui:${WEBUI_DOCKER_TAG-main}
+    container_name: ollama-ui
+    volumes:
+      - type: bind
+        source: ../docker/open-webui
+        target: /app/backend/data
+    depends_on:
+      - ollama
+    ports:
+      - ${OPEN_WEBUI_PORT-3000}:8080
+    environment:
+      - 'OLLAMA_BASE_URL=http://ollama:11434'
+      - 'WEBUI_SECRET_KEY='
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    restart: unless-stopped

@@ -16,14 +16,18 @@ services:
     ports:
       - 11434:11434
     volumes:
-      - ollama:/root/.ollama
+      - type: bind
+        source: /home/docker/ollama
+        target: /root/.ollama
     runtime: nvidia
 
   ollama-ui:
     image: ghcr.io/open-webui/open-webui:${WEBUI_DOCKER_TAG-main}
     container_name: ollama-ui
     volumes:
-      - open-webui:/app/backend/data
+      - type: bind
+        source: /home/docker/open-webui
+        target: /app/backend/data
     depends_on:
       - ollama
     ports:
@@ -34,7 +38,3 @@ services:
     extra_hosts:
       - host.docker.internal:host-gateway
     restart: unless-stopped
-
-volumes:
-  ollama:
-  open-webui:

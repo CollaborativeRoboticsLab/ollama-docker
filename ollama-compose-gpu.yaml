@@ -15,8 +15,7 @@ services:
     ports:
       - 11434:11434
     volumes:
-      - ollama:/root/.ollama
+      - type: bind
+        source: /home/docker/ollama
+        target: /root/.ollama
     runtime: nvidia
-
-volumes:
-  ollama:

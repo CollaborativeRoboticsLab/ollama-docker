@@ -17,7 +17,7 @@ services:
       - 11434:11434
     volumes:
       - type: bind
-        source: /home/docker/ollama
+        source: ./docker/ollama
         target: /root/.ollama
     runtime: nvidia
 
@@ -26,7 +26,7 @@ services:
     container_name: ollama-ui
     volumes:
       - type: bind
-        source: /home/docker/open-webui
+        source: ./docker/open-webui
         target: /app/backend/data
     depends_on:
       - ollama

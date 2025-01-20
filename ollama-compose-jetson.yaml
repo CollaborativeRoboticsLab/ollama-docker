@@ -1,0 +1,49 @@
+services:
+  ollama:
+    image: dustynv/ollama:0.5.1-r36.4.0
+    pull_policy: always
+    container_name: ollama
+    restart: unless-stopped
+    command: /bin/ollama serve
+    environment:
+      OLLAMA_HOST: 0.0.0.0
+      OLLAMA_MODELS: "/ollama"
+      OLLAMA_LOGS: "/ollama/logs/ollama.log"
+      OLLAMA_KEEP_ALIVE: "24h"
+      OLLAMA_DEBUG: 1
+
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['0']
+              capabilities: ["gpu"]
+    ports:
+      - 11434:11434
+    volumes:
+      - type: bind
+        source: ../docker/ollama
+        target: /ollama
+      - type: bind
+        source: /usr/local/cuda/lib64/
+        target: /usr/local/cuda/lib64/
+    runtime: nvidia
+
+  ollama-ui:
+    image: ghcr.io/open-webui/open-webui:${WEBUI_DOCKER_TAG-main}
+    container_name: ollama-ui
+    volumes:
+      - type: bind
+        source: ../docker/open-webui
+        target: /app/backend/data
+    depends_on:
+      - ollama
+    ports:
+      - ${OPEN_WEBUI_PORT-3000}:8080
+    environment:
+      - 'OLLAMA_BASE_URL=http://ollama:11434'
+      - 'WEBUI_SECRET_KEY='
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    restart: unless-stopped

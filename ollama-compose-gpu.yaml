@@ -4,12 +4,15 @@ services:
     pull_policy: always
     container_name: ollama
     restart: unless-stopped
+    tty: true
     # command: ollama run llama3.2   ## ["ollama", "run", <model_name>] 
     #network_mode: host
     deploy:
       resources:
         reservations:
           devices:
+            # - driver: ${OLLAMA_GPU_DRIVER-nvidia}
+            #   count: ${OLLAMA_GPU_COUNT-1}
             - driver: nvidia
               device_ids: ['0', '1']
               capabilities: ["gpu"]

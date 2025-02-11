@@ -87,20 +87,16 @@ docker compose -f ollama-compose-gpu.yaml pull
 docker compose -f ollama-compose-gpu.yaml up
 ```
 
-## Select a model
+## Selecting a model via Openweb UI a model
 
-Open a terminal and run the following command
+Open a browser window and follow [localhost:3000](http://localhost:3000/) 
+For any other computer in the network, replace localhost with server ip address
 
-```bash
-cd ollama-docker
-docker compose -f ollama-compose-gpu.yaml exec ollama bash
-```
+## Selecting a model via tty
 
-## Terminal to the container
-
-Open a terminal and run the following command
+on the terminal run following command once the container is running.
+For any other computer in the network, replace localhost with server ip address
 
 ```bash
-cd ollama-docker
-docker compose -f ollama-compose-gpu.yaml exec ollama ollama run llama3.2
+curl -X POST http://localhost:11434/download -d '{"model": "llama3.1:8b"}'
 ```
